@@ -1,0 +1,7 @@
+{
+  "cleanUrls": true,
+  "headers": [
+    { "source": "/admin", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] },
+    { "source": "/(.*).mp4", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] }
+  ]
+}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Agnovyra Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#0f2f1c;--green:#174a2b;--leaf:#86b86b;--gold:#e0ad4c;--cream:#f8f4ea;--sand:#ede5d2;--paper:#fffdf8;--ink:#16201a;--muted:#5f685d;--red:#b3402e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+h1,h2{font-family:Fraunces,serif;color:var(--green);font-weight:600}
+.top{background:var(--deep);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+.top h1{color:#fff;font-size:1.25rem}
+.top small{color:#b9c7b4}
+.btn{background:var(--green);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:600 .9rem Inter;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--deep)} .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.4)}
+.btn.sm{padding:6px 12px;font-size:.8rem}
+.wrap{max-width:1100px;margin:auto;padding:20px}
+.login{max-width:380px;margin:12vh auto;background:var(--paper);border:1px solid var(--sand);border-radius:20px;padding:30px;display:grid;gap:12px}
+input,select{width:100%;font:inherit;padding:11px 13px;border:1px solid #d9d0bb;border-radius:10px;background:#fff}
+label{font-size:.78rem;font-weight:700;color:var(--muted)}
+.msg{font-size:.88rem;color:var(--red)}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:18px}
+.tabs button{background:var(--paper);border:1px solid var(--sand);border-radius:999px;padding:9px 16px;font:600 .88rem Inter;cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.count{display:inline-block;background:var(--gold);color:var(--deep);border-radius:999px;font-size:.72rem;padding:1px 7px;margin-left:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:var(--paper);border:1px solid var(--sand);border-radius:16px;padding:14px}
+.stat b{font-family:Fraunces,serif;font-size:1.6rem;color:var(--green);display:block}
+.stat span{font-size:.8rem;color:var(--muted)}
+.item{background:var(--paper);border:1px solid var(--sand);border-radius:16px;padding:16px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:10px}
+.item h3{font-size:1rem}
+.item .meta{font-size:.82rem;color:var(--muted);margin-top:2px}
+.item ul{margin:8px 0 0 18px;font-size:.92rem}
+.item p{font-size:.92rem;margin-top:6px;white-space:pre-wrap}
+.side{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.side select{width:auto;padding:6px 10px;font-size:.85rem}
+.pill{font-size:.72rem;font-weight:700;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--sand)}
+.pill.new{background:#f6e3bb;color:#7a5414}
+a.wa{font-size:.82rem;color:var(--green);font-weight:600}
+table{width:100%;border-collapse:collapse;background:var(--paper);border-radius:16px;overflow:hidden}
+td,th{padding:10px;border-bottom:1px solid var(--sand);text-align:left;font-size:.9rem}
+td input[type=number]{width:120px}
+.empty{color:var(--muted);text-align:center;padding:40px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.item{grid-template-columns:1fr}.side{align-items:flex-start;flex-direction:row;flex-wrap:wrap}table{font-size:.85rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = supabase.createClient('https://qxweqdmmmotenmgywysi.supabase.co','sb_publishable_QteEd5-DF-VVCkaYKJd5Vg_QSDi6_3X');
+const app = document.getElementById('app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const when = d => new Date(d).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'});
+const waLink = p => { if(!p) return ''; let d=String(p).replace(/\D/g,''); if(d.startsWith('0')) d='234'+d.slice(1); return d.length>=10?`<a class="wa" href="https://wa.me/${d}" target="_blank" rel="noopener">WhatsApp ↗</a>`:''; };
+const STATUS = {orders:['new','confirmed','paid','delivered','cancelled'], bookings:['new','confirmed','done','cancelled'], leads:['new','contacted','closed']};
+let tab = 'orders', data = {};
+
+function loginView(msg=''){
+  app.innerHTML = `<form class="login" id="lf"><h2>Agnovyra Admin</h2><div><label>Email</label><input id="em" type="email" required autocomplete="username"></div><div><label>Password</label><input id="pw" type="password" required minlength="8" autocomplete="current-password"></div><div class="msg">${esc(msg)}</div><button class="btn">Sign in</button><button type="button" class="btn gold" id="su">Create admin account</button><small style="color:var(--muted)">After creating your account, confirm your email. Then ask Claude to give it admin access.</small></form>`;
+  lf.onsubmit = async e => { e.preventDefault(); const {error} = await sb.auth.signInWithPassword({email:em.value,password:pw.value}); error ? loginView(error.message) : load(); };
+  su.onclick = async () => { if(!em.value||pw.value.length<8) return loginView('Enter an email and a password of at least 8 characters.'); const {error} = await sb.auth.signUp({email:em.value,password:pw.value}); loginView(error?error.message:'Account created. Check your email to confirm it, then ask Claude to make it an admin.'); };
+}
+
+async function load(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return loginView();
+  const {data:adm} = await sb.from('admins').select('user_id').eq('user_id', session.user.id);
+  if(!adm || !adm.length){ app.innerHTML = `<div class="login"><h2>Almost there</h2><p>You're signed in as <b>${esc(session.user.email)}</b>, but this account isn't an admin yet. Ask Claude to grant admin access, then reload.</p><button class="btn" onclick="sb.auth.signOut().then(()=>loginView())">Sign out</button></div>`; return; }
+  const [o,b,l,p] = await Promise.all([
+    sb.from('orders').select('*').order('created_at',{ascending:false}).limit(300),
+    sb.from('bookings').select('*').order('created_at',{ascending:false}).limit(300),
+    sb.from('leads').select('*').order('created_at',{ascending:false}).limit(300),
+    sb.from('products').select('*').order('sort')
+  ]);
+  data = {orders:o.data||[], bookings:b.data||[], leads:l.data||[], products:p.data||[]};
+  render(session.user.email);
+}
+
+function render(email){
+  const n = k => data[k].filter(r=>r.status==='new').length;
+  app.innerHTML = `<div class="top"><div><h1>Agnovyra Admin</h1><small>${esc(email)}</small></div><div style="display:flex;gap:8px"><button class="btn sm gold" id="rf">Refresh</button><button class="btn sm ghost" id="so">Sign out</button></div></div>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>${n('orders')}</b><span>new orders</span></div>
+      <div class="stat"><b>${n('bookings')}</b><span>new bookings</span></div>
+      <div class="stat"><b>${n('leads')}</b><span>new enquiries</span></div>
+      <div class="stat"><b>${data.products.filter(p=>p.available).length}</b><span>products live</span></div>
+    </div>
+    <div class="tabs">${['orders','bookings','leads','products'].map(k=>`<button data-t="${k}" class="${k===tab?'on':''}">${{orders:'Orders',bookings:'Bookings',leads:'Enquiries & waitlists',products:'Products & prices'}[k]}${k!=='products'&&n(k)?`<span class="count">${n(k)}</span>`:''}</button>`).join('')}</div>
+    <div id="list"></div>
+  </div>`;
+  rf.onclick = load; so.onclick = () => sb.auth.signOut().then(()=>loginView());
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t; render(email);});
+  const list = document.getElementById('list');
+  if(tab==='products') return productsView(list);
+  const rows = data[tab];
+  if(!rows.length){ list.innerHTML = '<div class="empty">Nothing here yet.</div>'; return; }
+  list.innerHTML = rows.map(r => {
+    let body = '';
+    if(tab==='orders') body = `<h3>Order #${r.id} ${r.customer_name?'· '+esc(r.customer_name):''}</h3><div class="meta">${when(r.created_at)} ${r.phone?'· '+esc(r.phone):''} ${waLink(r.phone)}</div><ul>${(r.items||[]).map(i=>`<li>${esc(i.name)}: <b>${esc(i.qty)}</b> (${esc(i.unit)})</li>`).join('')}</ul>${r.note?`<p>${esc(r.note)}</p>`:''}`;
+    if(tab==='bookings') body = `<h3>${esc(r.kind)} · ${esc(r.name)}</h3><div class="meta">Requested ${when(r.created_at)} · ${esc(r.phone)} ${waLink(r.phone)}</div><p>📅 ${esc(r.visit_date||'No date')} · 👥 ${esc(r.group_size||1)}${r.note?'\n'+esc(r.note):''}</p>`;
+    if(tab==='leads') body = `<h3>${esc(r.kind)}${r.name?' · '+esc(r.name):''}</h3><div class="meta">${when(r.created_at)} ${r.contact?'· '+esc(r.contact):''} ${waLink(r.contact)}</div>${r.message?`<p>${esc(r.message)}</p>`:''}`;
+    return `<div class="item"><div>${body}</div><div class="side"><span class="pill ${r.status==='new'?'new':''}">${esc(r.status)}</span><select data-id="${r.id}">${STATUS[tab].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select></div></div>`;
+  }).join('');
+  list.querySelectorAll('select[data-id]').forEach(sel => sel.onchange = async () => {
+    const {error} = await sb.from(tab).update({status:sel.value}).eq('id', sel.dataset.id);
+    if(error) alertBox(error.message); else { data[tab].find(r=>r.id==sel.dataset.id).status = sel.value; render(email); }
+  });
+}
+
+function productsView(list){
+  list.innerHTML = `<table><thead><tr><th>Product</th><th>Price (₦)</th><th>On sale</th><th>Coming soon</th><th></th></tr></thead><tbody>${data.products.map(p=>`<tr data-id="${p.id}"><td>${esc(p.icon)} ${esc(p.name)}<br><small style="color:var(--muted)">${esc(p.unit)}</small></td><td><input type="number" min="0" step="50" value="${p.price_ngn??''}" placeholder="Ask on WhatsApp"></td><td><input type="checkbox" ${p.available?'checked':''} class="av"></td><td><input type="checkbox" ${p.coming_soon?'checked':''} class="cs"></td><td><button class="btn sm">Save</button></td></tr>`).join('')}</tbody></table><p style="color:var(--muted);font-size:.85rem;margin-top:10px">Leave the price empty to show "price confirmed on WhatsApp". Prices you set appear on the website shop straight away.</p>`;
+  list.querySelectorAll('tr[data-id]').forEach(tr => tr.querySelector('button').onclick = async e => {
+    const v = tr.querySelector('input[type=number]').value;
+    const {error} = await sb.from('products').update({price_ngn: v===''?null:+v, available: tr.querySelector('.av').checked, coming_soon: tr.querySelector('.cs').checked, updated_at: new Date().toISOString()}).eq('id', tr.dataset.id);
+    e.target.textContent = error ? 'Error' : 'Saved ✓'; setTimeout(()=>e.target.textContent='Save',1500);
+  });
+}
+function alertBox(m){ const d=document.createElement('div'); d.className='msg'; d.style.cssText='position:fixed;bottom:16px;left:16px;right:16px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.2)'; d.textContent=m; document.body.appendChild(d); setTimeout(()=>d.remove(),3000); }
+sb.auth.onAuthStateChange(() => {});
+load();
+</script>
+</body>
+</html>

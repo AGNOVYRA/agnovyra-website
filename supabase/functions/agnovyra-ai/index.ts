@@ -3,7 +3,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
-const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash";
+const MODELS = [Deno.env.get("GEMINI_MODEL"), "gemini-3.8-flash", "gemini-flash-latest", "gemini-flash-lite-latest"].filter(Boolean) as string[];
 const PLAN_PRICE = parseInt(Deno.env.get("PLAN_PRICE_NGN") ?? "50000");
 const CHAT_PER_DAY = parseInt(Deno.env.get("CHAT_PER_DAY") ?? "10");
 const CHAT_GLOBAL_PER_DAY = parseInt(Deno.env.get("CHAT_GLOBAL_PER_DAY") ?? "400");
@@ -61,23 +61,38 @@ Rules:
 - Use tables for costs, revenue, cash flow and the action plan.
 - End with one line: "Prepared with Agnovyra AI — Agnovyra Ventures, Abeokuta, Nigeria. Verify all prices locally before committing funds."`;
 
-async function gemini(system: string, contents: { role: string; parts: { text: string }[] }[], maxTokens: number, temperature: number) {
-  if (!GEMINI_KEY) throw new Error("NO_KEY");
+async function callModel(model: string, system: string, contents: unknown[], maxTokens: number, temperature: number) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 140_000);
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: "POST",
       signal: ctrl.signal,
       headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY },
       body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents, generationConfig: { maxOutputTokens: maxTokens, temperature } }),
     });
     const data = await r.json();
-    if (!r.ok) { console.error("gemini error", r.status, JSON.stringify(data).slice(0, 500)); throw new Error(r.status === 429 ? "BUSY" : "AI_ERROR"); }
-    const text = (data.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("").trim();
-    if (!text) throw new Error("AI_ERROR");
-    return text;
+    return { ok: r.ok, status: r.status, data };
   } finally { clearTimeout(t); }
+}
+
+// Try each model in order; skip models that are retired (404) or not on the free tier, so a Google model change can't take the AI offline.
+async function gemini(system: string, contents: { role: string; parts: { text: string }[] }[], maxTokens: number, temperature: number) {
+  if (!GEMINI_KEY) throw new Error("NO_KEY");
+  let last = "AI_ERROR";
+  for (const model of MODELS) {
+    const { ok, status, data } = await callModel(model, system, contents, maxTokens, temperature);
+    if (ok) {
+      const text = (data.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("").trim();
+      if (text) return text;
+      console.error("empty reply from", model, JSON.stringify(data).slice(0, 300));
+      last = "AI_ERROR"; continue;
+    }
+    console.error("gemini error", model, status, JSON.stringify(data).slice(0, 400));
+    if (status === 400 || status === 401 || status === 403) { last = "AI_ERROR"; if (status !== 400) break; continue; }
+    last = status === 429 ? "BUSY" : "AI_ERROR";
+  }
+  throw new Error(last);
 }
 
 async function allow(key: string, kind: string, limit: number) {

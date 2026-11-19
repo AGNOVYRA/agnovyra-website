@@ -93,7 +93,7 @@ footer{background:var(--deep);color:#b9c7b4;padding:30px 0;margin-top:50px;font-
       <div class="full"><label>Anything else?</label><textarea id="notes" placeholder="Goals, market you plan to sell to, partners, challenges…"></textarea></div>
       <div><label>Your name</label><input id="name"></div>
       <div><label>Phone / WhatsApp (to receive your plan)</label><input id="phone"></div>
-      <div class="full row" style="align-items:center"><button class="btn gold" id="go">✦ Generate my plan</button><span class="small">Free preview · Full plan ₦<span class="priceTxt">10,000</span></span></div>
+      <div class="full row" style="align-items:center"><button class="btn gold" id="go">✦ Generate my plan</button><span class="small">Free preview · Full plan ₦<span class="priceTxt">50,000</span></span></div>
       <div class="full err" id="err"></div>
     </form>
   </div>
@@ -108,7 +108,7 @@ footer{background:var(--deep);color:#b9c7b4;padding:30px 0;margin-top:50px;font-
     <div class="pay noprint" id="pay">
       <span class="tag">Unlock the full plan</span>
       <h3>Get all 13 sections, bank-ready</h3>
-      <div class="price">₦<span class="priceTxt">10,000</span></div>
+      <div class="price">₦<span class="priceTxt">50,000</span></div>
       <p>Includes start-up costs, revenue and profit tables, break-even, 12-month cash flow, marketing plan, risks, licences and a 90-day action plan. Print it or save as PDF.</p>
       <div class="row"><button class="btn gold" id="payBtn">Pay & unlock on WhatsApp →</button><button class="btn line" style="color:#fff;border-color:rgba(255,255,255,.6)" id="checkBtn">I've paid, unlock my plan</button></div>
       <p class="small" style="color:#b9c7b4">Your plan reference: <b id="refTxt"></b>. Save this page link to come back any time.</p>
@@ -148,7 +148,7 @@ let current=null;
 function show(d){
   current=d;
   $('#formCard').classList.add('hidden'); $('#loading').classList.add('hidden'); $('#result').classList.remove('hidden'); $('#how').classList.add('hidden');
-  document.querySelectorAll('.priceTxt').forEach(e=>e.textContent=fmt(d.price||10000));
+  document.querySelectorAll('.priceTxt').forEach(e=>e.textContent=fmt(d.price||50000));
   $('#refTxt').textContent=d.ref.slice(0,8).toUpperCase();
   const title=`<h1>${(d.inputs&&d.inputs.enterprise)||'Agribusiness'} business plan</h1><p class="small">${d.inputs&&d.inputs.location?d.inputs.location+' · ':''}Ref ${d.ref.slice(0,8).toUpperCase()}</p>`;
   if(d.paid&&d.plan){ $('#doc').classList.remove('lock'); $('#doc').innerHTML=title+md(d.plan); $('#pay').classList.add('hidden'); $('#paidBar').classList.remove('hidden'); }
@@ -168,11 +168,12 @@ $('#f').onsubmit=async e=>{
     const d=await call({action:'plan_create',inputs,name:v('name'),phone:v('phone')});
     clearInterval(tick);
     if(d.error||!d.ref) throw new Error(d.error||'Something went wrong.');
-    show({...d,inputs,paid:false});
+    const g=await call({action:'plan_get',ref:d.ref}).catch(()=>null);
+    show(g&&!g.error?g:{...d,inputs,paid:false,price:50000});
   }catch(err){ clearInterval(tick); $('#loading').classList.add('hidden'); $('#formCard').classList.remove('hidden'); $('#err').textContent=err.message||'Network error. Please try again.'; }
 };
 
-$('#payBtn').onclick=()=>{ const r=current.ref.slice(0,8).toUpperCase(); location.href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hello Agnovyra, I want to unlock my AI business plan.\nRef: ${r}\nPlan: ${(current.inputs&&current.inputs.enterprise)||''}\nPlease send payment details for ₦${fmt(current.price||10000)}.\nLink: ${location.href}`)}`; };
+$('#payBtn').onclick=()=>{ const r=current.ref.slice(0,8).toUpperCase(); location.href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hello Agnovyra, I want to unlock my AI business plan.\nRef: ${r}\nPlan: ${(current.inputs&&current.inputs.enterprise)||''}\nPlease send payment details for ₦${fmt(current.price||50000)}.\nLink: ${location.href}`)}`; };
 $('#checkBtn').onclick=async()=>{ $('#perr').textContent='Checking…'; try{ const d=await call({action:'plan_get',ref:current.ref}); if(d.paid){ show(d); } else $('#perr').textContent="We haven't confirmed your payment yet. We'll unlock it as soon as it's confirmed. Please check back shortly."; }catch(e){ $('#perr').textContent='Network error. Please try again.'; } };
 
 const ref=new URLSearchParams(location.search).get('ref');

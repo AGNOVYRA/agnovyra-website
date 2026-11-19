@@ -4,7 +4,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
 const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash";
-const PLAN_PRICE = parseInt(Deno.env.get("PLAN_PRICE_NGN") ?? "10000");
+const PLAN_PRICE = parseInt(Deno.env.get("PLAN_PRICE_NGN") ?? "50000");
 const CHAT_PER_DAY = parseInt(Deno.env.get("CHAT_PER_DAY") ?? "10");
 const CHAT_GLOBAL_PER_DAY = parseInt(Deno.env.get("CHAT_GLOBAL_PER_DAY") ?? "400");
 const PLAN_GLOBAL_PER_DAY = parseInt(Deno.env.get("PLAN_GLOBAL_PER_DAY") ?? "30");

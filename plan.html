@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Agribusiness Plan Generator — Poultry, Fish, Pig, BSF, Cocoa | Agnovyra</title>
+<meta name="description" content="Get a custom, bank-ready agribusiness plan in minutes: poultry, catfish, pig, black soldier fly, cocoa, plantain and more. Written by Agnovyra AI with costs, profit, cash flow and a 90-day action plan for Nigeria and Africa.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#0f2f1c;--green:#174a2b;--green-2:#2b6a3d;--leaf:#86b86b;--lime:#c9e3a6;--gold:#e0ad4c;--gold-2:#f2c76d;--cream:#f8f4ea;--sand:#ede5d2;--paper:#fffdf8;--ink:#16201a;--muted:#5f685d;--shadow:0 20px 50px -20px rgba(15,47,28,.35)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;color:var(--green);font-weight:600;line-height:1.15}
+a{color:var(--green-2)}
+.wrap{max-width:900px;margin:auto;padding:0 20px}
+header{background:var(--deep);color:#fff;padding:16px 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
+header a.brand{font-family:Fraunces,serif;font-size:1.3rem;color:#fff;text-decoration:none}
+header a.back{color:var(--lime);font-size:.9rem;text-decoration:none}
+.hero{background:linear-gradient(160deg,var(--green),var(--deep));color:#e9efe3;padding:56px 0 70px}
+.hero h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem);margin:14px 0}
+.hero h1 em{color:var(--gold-2);font-weight:500}
+.tag{display:inline-block;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.12);padding:6px 12px;border-radius:999px}
+.hero p{max-width:640px;opacity:.92}
+.ticks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.92rem}
+.ticks span::before{content:"✓ ";color:var(--gold-2);font-weight:700}
+.card{background:var(--paper);border:1px solid var(--sand);border-radius:22px;padding:28px;box-shadow:var(--shadow);margin-top:-40px;position:relative}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.02em}
+input,select,textarea{width:100%;font:inherit;padding:12px 14px;border:1px solid #d9d0bb;border-radius:12px;background:var(--cream)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--leaf);border-color:transparent}
+textarea{min-height:90px;resize:vertical}
+.full{grid-column:1/-1}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;border:0;border-radius:999px;padding:14px 26px;font:600 1rem Inter;cursor:pointer;text-decoration:none}
+.btn.gold{background:var(--gold);color:var(--deep)}
+.btn.line{background:transparent;color:var(--green);border:1.5px solid var(--green)}
+.btn:disabled{opacity:.6;cursor:wait}
+.small{font-size:.85rem;color:var(--muted)}
+.err{color:#b3402e;font-weight:600;margin-top:10px}
+.loading{text-align:center;padding:40px 10px}
+.spin{width:54px;height:54px;border:5px solid var(--sand);border-top-color:var(--green);border-radius:50%;animation:s 1s linear infinite;margin:0 auto 18px}
+@keyframes s{to{transform:rotate(360deg)}}
+.steps{list-style:none;display:inline-grid;gap:6px;text-align:left;margin-top:12px;color:var(--muted)}
+.steps li.on{color:var(--green);font-weight:600}
+.doc{background:#fff;border:1px solid var(--sand);border-radius:18px;padding:32px;margin:22px 0;position:relative;overflow:hidden}
+.doc h1{font-size:1.8rem;margin-bottom:12px}.doc h2{font-size:1.35rem;margin:26px 0 10px;padding-top:12px;border-top:1px solid var(--sand)}.doc h3{font-size:1.1rem;margin:16px 0 8px}
+.doc p,.doc li{margin-bottom:8px}.doc ul,.doc ol{padding-left:22px;margin-bottom:10px}
+.doc table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem;display:block;overflow-x:auto}
+.doc th,.doc td{border:1px solid var(--sand);padding:8px 10px;text-align:left;vertical-align:top}
+.doc th{background:var(--cream)}
+.lock{position:relative}
+.lock::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(transparent,#fff)}
+.pay{background:linear-gradient(160deg,var(--green),var(--deep));color:#e9efe3;border-radius:20px;padding:26px;display:grid;gap:12px}
+.pay h3{color:#fff;font-size:1.5rem}
+.pay .price{font-family:Fraunces,serif;font-size:2.4rem;color:var(--gold-2)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:40px 0}
+.how div{background:var(--paper);border:1px solid var(--sand);border-radius:18px;padding:20px}
+.how b{font-family:Fraunces,serif;color:var(--gold);font-size:1.8rem;display:block}
+.faq details{background:var(--paper);border:1px solid var(--sand);border-radius:14px;margin-bottom:10px}
+.faq summary{padding:16px 20px;font-weight:600;cursor:pointer}
+.faq p{padding:0 20px 16px;color:var(--muted)}
+footer{background:var(--deep);color:#b9c7b4;padding:30px 0;margin-top:50px;font-size:.9rem;text-align:center}
+.hidden{display:none!important}
+@media(max-width:700px){.grid,.how{grid-template-columns:1fr}.card,.doc{padding:20px}}
+@media print{header,.hero,.card,.pay,.how,.faq,footer,.noprint{display:none!important}body{background:#fff}.doc{border:0;margin:0;padding:0}.lock::after{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="./">Agnovyra</a><a class="back" href="./">← Back to website</a></div></header>
+
+<section class="hero noprint"><div class="wrap">
+  <span class="tag">✦ Agnovyra AI</span>
+  <h1>Your agribusiness plan, <em>written in minutes</em></h1>
+  <p>Tell us what you want to farm, where, and your budget. Agnovyra AI writes a complete business plan with costs, profit, break-even, cash flow, risks and a 90-day action plan. Use it for a bank loan, a grant, an investor, or your own decisions.</p>
+  <div class="ticks"><span>Poultry, fish, pigs, BSF, cocoa & more</span><span>Built for Nigeria & Africa</span><span>Free preview</span></div>
+</div></section>
+
+<main class="wrap">
+  <div class="card" id="formCard">
+    <h2 style="margin-bottom:16px">Tell us about your farm idea</h2>
+    <form id="f" class="grid">
+      <div><label>What do you want to farm? *</label><select id="enterprise" required>
+        <option value="">Choose…</option><option>Broiler poultry</option><option>Layer poultry (eggs)</option><option>Turkey farming</option><option>Local / improved chickens (FUNAAB Alpha, Noiler, etc.)</option><option>Catfish farming</option><option>Tilapia farming</option><option>Pig farming</option><option>Black soldier fly (BSF) farming</option><option>Cocoa plantation</option><option>Plantain plantation</option><option>Integrated farm (several enterprises)</option><option>Agro-export business</option><option>Other (describe below)</option></select></div>
+      <div><label>Location (town, state, country) *</label><input id="location" required placeholder="e.g. Abeokuta, Ogun State, Nigeria"></div>
+      <div><label>Scale / size</label><input id="scale" placeholder="e.g. 500 birds, 2,000 fish, 10 sows, 2 hectares"></div>
+      <div><label>Budget available *</label><input id="budget" required placeholder="e.g. ₦2,500,000"></div>
+      <div><label>What is the plan for?</label><select id="purpose"><option>My own decision-making</option><option>Bank or microfinance loan</option><option>Government or NGO grant</option><option>Investor or partner</option><option>School project</option></select></div>
+      <div><label>Your experience</label><select id="experience"><option>Beginner</option><option>Some experience</option><option>Experienced farmer</option></select></div>
+      <div class="full"><label>Land and structures you already have</label><input id="land" placeholder="e.g. 1 plot of land, no pen yet; borehole available"></div>
+      <div class="full"><label>Local prices you know (optional, makes the plan more accurate)</label><textarea id="prices" placeholder="e.g. Day-old chick ₦900, 25kg starter feed ₦22,000, live broiler sells ₦7,500"></textarea></div>
+      <div class="full"><label>Anything else?</label><textarea id="notes" placeholder="Goals, market you plan to sell to, partners, challenges…"></textarea></div>
+      <div><label>Your name</label><input id="name"></div>
+      <div><label>Phone / WhatsApp (to receive your plan)</label><input id="phone"></div>
+      <div class="full row" style="align-items:center"><button class="btn gold" id="go">✦ Generate my plan</button><span class="small">Free preview · Full plan ₦<span class="priceTxt">10,000</span></span></div>
+      <div class="full err" id="err"></div>
+    </form>
+  </div>
+
+  <div class="card hidden" id="loading"><div class="loading">
+    <div class="spin"></div><h3>Agnovyra AI is writing your plan…</h3><p class="small">This takes about 30–90 seconds. Please keep this page open.</p>
+    <ul class="steps" id="lsteps"><li>Analysing your inputs</li><li>Studying the market</li><li>Building the production plan</li><li>Calculating costs and profit</li><li>Writing the cash flow and risks</li><li>Final checks</li></ul>
+  </div></div>
+
+  <div id="result" class="hidden">
+    <div class="doc" id="doc"></div>
+    <div class="pay noprint" id="pay">
+      <span class="tag">Unlock the full plan</span>
+      <h3>Get all 13 sections, bank-ready</h3>
+      <div class="price">₦<span class="priceTxt">10,000</span></div>
+      <p>Includes start-up costs, revenue and profit tables, break-even, 12-month cash flow, marketing plan, risks, licences and a 90-day action plan. Print it or save as PDF.</p>
+      <div class="row"><button class="btn gold" id="payBtn">Pay & unlock on WhatsApp →</button><button class="btn line" style="color:#fff;border-color:rgba(255,255,255,.6)" id="checkBtn">I've paid, unlock my plan</button></div>
+      <p class="small" style="color:#b9c7b4">Your plan reference: <b id="refTxt"></b>. Save this page link to come back any time.</p>
+      <p class="err" id="perr" style="color:var(--gold-2)"></p>
+    </div>
+    <div class="row noprint hidden" id="paidBar" style="margin:10px 0 0"><button class="btn" onclick="window.print()">🖨️ Print / Save as PDF</button><a class="btn line" href="plan.html">Create another plan</a></div>
+  </div>
+
+  <section class="how noprint" id="how">
+    <div><b>1</b><h3>Tell us your idea</h3><p class="small">Enterprise, location, budget and any prices you know.</p></div>
+    <div><b>2</b><h3>Read your free preview</h3><p class="small">See the executive summary and every section of your plan.</p></div>
+    <div><b>3</b><h3>Unlock the full plan</h3><p class="small">Pay once, then print or save it as a PDF. Edit the assumptions any time.</p></div>
+  </section>
+
+  <section class="faq noprint">
+    <h2 style="margin-bottom:14px">Questions</h2>
+    <details><summary>Is the plan good enough for a bank or grant?</summary><p>It follows the structure banks and grant panels expect, with clear tables and calculations. All prices are shown as labelled assumptions, so update them with current local quotes before you submit.</p></details>
+    <details><summary>Who writes it?</summary><p>Agnovyra AI, trained with practical knowledge from our working integrated farm in Abeokuta. Need a human review or a full feasibility study? Message us on WhatsApp.</p></details>
+    <details><summary>Can I get help starting the farm itself?</summary><p>Yes. Agnovyra offers farm setup, farm revival, training and BSF starter colonies. Chat with us on WhatsApp: 0816 388 3487.</p></details>
+  </section>
+</main>
+
+<footer>© <span id="yr"></span> Agnovyra Ventures · Odeda, Ogun State, Nigeria · <a href="./" style="color:var(--lime)">agnovyra website</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+<script>
+const FN='https://qxweqdmmmotenmgywysi.supabase.co/functions/v1/agnovyra-ai', KEY='sb_publishable_QteEd5-DF-VVCkaYKJd5Vg_QSDi6_3X', WHATSAPP='2348163883487';
+const $=s=>document.querySelector(s);
+document.getElementById('yr').textContent=new Date().getFullYear();
+let cid; try{ cid=localStorage.getItem('agn_cid')||crypto.randomUUID(); localStorage.setItem('agn_cid',cid);}catch(e){ cid=crypto.randomUUID(); }
+const call=async b=>{ const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify({...b,client_id:cid})}); return r.json(); };
+const md=t=>DOMPurify.sanitize(marked.parse(t||''));
+const fmt=n=>Number(n).toLocaleString('en-NG');
+let current=null;
+
+function show(d){
+  current=d;
+  $('#formCard').classList.add('hidden'); $('#loading').classList.add('hidden'); $('#result').classList.remove('hidden'); $('#how').classList.add('hidden');
+  document.querySelectorAll('.priceTxt').forEach(e=>e.textContent=fmt(d.price||10000));
+  $('#refTxt').textContent=d.ref.slice(0,8).toUpperCase();
+  const title=`<h1>${(d.inputs&&d.inputs.enterprise)||'Agribusiness'} business plan</h1><p class="small">${d.inputs&&d.inputs.location?d.inputs.location+' · ':''}Ref ${d.ref.slice(0,8).toUpperCase()}</p>`;
+  if(d.paid&&d.plan){ $('#doc').classList.remove('lock'); $('#doc').innerHTML=title+md(d.plan); $('#pay').classList.add('hidden'); $('#paidBar').classList.remove('hidden'); }
+  else { $('#doc').classList.add('lock'); $('#doc').innerHTML=title+md(d.preview); $('#pay').classList.remove('hidden'); $('#paidBar').classList.add('hidden'); }
+  history.replaceState(null,'','?ref='+d.ref);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('#f').onsubmit=async e=>{
+  e.preventDefault(); $('#err').textContent='';
+  const v=id=>$('#'+id).value.trim();
+  const inputs={enterprise:v('enterprise')==='Other (describe below)'?'Other: '+v('notes').slice(0,100):v('enterprise'),location:v('location'),scale:v('scale'),budget:v('budget'),purpose:v('purpose'),experience:v('experience'),land:v('land'),prices:v('prices'),notes:v('notes')};
+  $('#formCard').classList.add('hidden'); $('#loading').classList.remove('hidden');
+  const li=[...document.querySelectorAll('#lsteps li')]; let k=0; li[0].classList.add('on');
+  const tick=setInterval(()=>{ if(k<li.length-1){ li[++k].classList.add('on'); } },12000);
+  try{
+    const d=await call({action:'plan_create',inputs,name:v('name'),phone:v('phone')});
+    clearInterval(tick);
+    if(d.error||!d.ref) throw new Error(d.error||'Something went wrong.');
+    show({...d,inputs,paid:false});
+  }catch(err){ clearInterval(tick); $('#loading').classList.add('hidden'); $('#formCard').classList.remove('hidden'); $('#err').textContent=err.message||'Network error. Please try again.'; }
+};
+
+$('#payBtn').onclick=()=>{ const r=current.ref.slice(0,8).toUpperCase(); location.href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hello Agnovyra, I want to unlock my AI business plan.\nRef: ${r}\nPlan: ${(current.inputs&&current.inputs.enterprise)||''}\nPlease send payment details for ₦${fmt(current.price||10000)}.\nLink: ${location.href}`)}`; };
+$('#checkBtn').onclick=async()=>{ $('#perr').textContent='Checking…'; try{ const d=await call({action:'plan_get',ref:current.ref}); if(d.paid){ show(d); } else $('#perr').textContent="We haven't confirmed your payment yet. We'll unlock it as soon as it's confirmed. Please check back shortly."; }catch(e){ $('#perr').textContent='Network error. Please try again.'; } };
+
+const ref=new URLSearchParams(location.search).get('ref');
+if(ref){ $('#formCard').classList.add('hidden'); $('#loading').classList.remove('hidden'); call({action:'plan_get',ref}).then(d=>{ if(d.error) throw new Error(d.error); show(d); }).catch(err=>{ $('#loading').classList.add('hidden'); $('#formCard').classList.remove('hidden'); $('#err').textContent=err.message; }); }
+</script>
+</body>
+</html>

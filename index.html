@@ -281,6 +281,39 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--deep);color:#fff;padding:12px 20px;border-radius:999px;font-size:.9rem;opacity:0;transition:.3s;z-index:90;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%)}
 
+
+/* ---------- Agnovyra AI chat ---------- */
+.ai-fab{position:fixed;left:18px;bottom:18px;z-index:70;display:flex;align-items:center;gap:8px;background:var(--deep);color:#fff;border:1.5px solid var(--gold);border-radius:999px;padding:12px 18px 12px 14px;font:700 .92rem Inter,sans-serif;cursor:pointer;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);animation:float 3s ease-in-out infinite}
+.ai-fab i{font-style:normal;color:var(--gold-2);font-size:1.1rem}
+.ai-panel{position:fixed;left:18px;bottom:84px;z-index:75;width:min(400px,calc(100vw - 36px));height:min(600px,calc(100vh - 120px));background:var(--paper);border-radius:22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden;border:1px solid var(--sand)}
+.ai-panel.open{display:flex;animation:pop .25s ease}
+.ai-head{background:linear-gradient(135deg,var(--green),var(--deep));color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
+.ai-head b{font-family:Fraunces,serif;font-size:1.15rem;display:block}
+.ai-head small{color:var(--lime);font-size:.78rem}
+.ai-head button{background:none;border:0;color:#fff;font-size:1.5rem;cursor:pointer}
+.ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--cream)}
+.ai-m{max-width:88%;padding:11px 14px;border-radius:16px;font-size:.93rem;line-height:1.55;white-space:normal;word-wrap:break-word}
+.ai-m.u{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
+.ai-m.b{align-self:flex-start;background:#fff;border:1px solid var(--sand);border-bottom-left-radius:4px}
+.ai-m.b ul,.ai-m.b ol{padding-left:18px;margin:4px 0}
+.ai-m.b p{margin:0 0 6px}
+.ai-typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--leaf);margin-right:4px;animation:bob .6s infinite alternate}
+.ai-typing span:nth-child(2){animation-delay:.2s}.ai-typing span:nth-child(3){animation-delay:.4s}
+.ai-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;background:var(--cream)}
+.ai-chips button{background:#fff;border:1px solid var(--sand);border-radius:999px;padding:7px 12px;font:500 .8rem Inter,sans-serif;cursor:pointer;color:var(--green)}
+.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--sand);background:var(--paper)}
+.ai-form input{flex:1;padding:12px 14px;border-radius:999px}
+.ai-form button{width:46px;height:46px;border-radius:50%;border:0;background:var(--gold);color:var(--deep);font-size:1.2rem;cursor:pointer;flex:none}
+.ai-note{font-size:.7rem;color:var(--muted);text-align:center;padding:0 12px 8px;background:var(--paper)}
+.ai-band{background:linear-gradient(135deg,#123a22,#0b2415);color:#e9efe3;border-radius:28px;padding:40px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;box-shadow:var(--shadow)}
+.ai-band h2{color:#fff;font-size:clamp(1.8rem,3.5vw,2.6rem)}
+.ai-band h2 em{color:var(--gold-2)}
+.ai-band p{color:#c9d6c3;margin:12px 0 22px}
+.ai-demo{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;font-size:.88rem;display:grid;gap:10px}
+.ai-demo div{padding:10px 12px;border-radius:12px}
+.ai-demo .q{background:var(--green-2);justify-self:end;max-width:85%}
+.ai-demo .a{background:rgba(255,255,255,.1);max-width:92%}
+@media (max-width:760px){.ai-band{grid-template-columns:1fr;padding:26px}.ai-fab span{display:none}.ai-fab{padding:14px}}
 @media (max-width:960px){
   .about,.mapwrap,.loop,.jbody,.invest,.contact{grid-template-columns:1fr}
   .grid3,.exp,.svc,.box-row{grid-template-columns:1fr 1fr}
@@ -320,6 +353,7 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
         <li><a href="#order">Shop</a></li>
         <li><a href="#visit">Visit</a></li>
         <li><a href="#academy">Academy</a></li>
+        <li><a href="#ai">✦ AI</a></li>
         <li><a href="#services">Trade & services</a></li>
         <li><a href="#invest">Invest</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -603,6 +637,29 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
   </div>
 </section>
 
+
+<!-- ================= AGNOVYRA AI ================= -->
+<section id="ai">
+  <div class="wrap">
+    <div class="ai-band reveal">
+      <div>
+        <span class="kicker" style="color:var(--gold)">✦ New · Agnovyra AI</span>
+        <h2>A farm expert in your pocket, <em>day and night</em></h2>
+        <p>Ask anything about poultry, fish, pigs, black soldier fly, cocoa, plantain or export, in English, Pidgin or Yoruba. Answers come from the knowledge of a working Nigerian farm. Need a business plan for a loan, grant or investor? Agnovyra AI writes one for you in minutes.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn gold" id="openAi">Ask Agnovyra AI (free)</button>
+          <a class="btn line" href="plan.html">Generate a business plan →</a>
+        </div>
+      </div>
+      <div class="ai-demo" aria-hidden="true">
+        <div class="q">My broilers are 3 weeks old and eating less. What should I check?</div>
+        <div class="a">Start with heat: at 3 weeks, panting birds eat less. Check ventilation, clean water, and look for wet droppings or dull eyes. If birds look sick, call a vet today…</div>
+        <div class="q">Abeg, how many catfish fit inside 3×4 m tarpaulin pond?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= SHOP ================= -->
 <section id="order">
   <div class="wrap">
@@ -758,6 +815,16 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
   <svg width="30" height="30" viewBox="0 0 32 32" fill="#fff"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm0 23.2c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6C5.3 9.7 10.1 5 16 5s10.7 4.8 10.7 10.6S21.9 26.2 16 26.2zm5.9-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1c-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2s0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.1-1.2 2.8 1.2 3.2 1.4 3.4c.2.2 2.3 3.6 5.6 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
 </button>
 
+
+<button class="ai-fab" id="aiFab" aria-label="Ask Agnovyra AI"><i>✦</i><span>Ask Agnovyra AI</span></button>
+<div class="ai-panel" id="aiPanel" role="dialog" aria-label="Agnovyra AI chat">
+  <div class="ai-head"><div><b>Agnovyra AI</b><small>Farm advisor · English, Pidgin, Yoruba</small></div><button id="aiClose" aria-label="Close">×</button></div>
+  <div class="ai-msgs" id="aiMsgs"></div>
+  <div class="ai-chips" id="aiChips"></div>
+  <form class="ai-form" id="aiForm"><input id="aiIn" placeholder="Ask about your farm…" autocomplete="off" maxlength="1200"><button aria-label="Send">➤</button></form>
+  <div class="ai-note">AI can make mistakes. For sick animals, always see a vet.</div>
+</div>
+
 <div class="modal" id="modal">
   <form id="bookForm">
     <button type="button" class="close" id="closeModal" aria-label="Close">×</button>
@@ -885,6 +952,36 @@ $('#bookForm').onsubmit=async e=>{ e.preventDefault(); await save('bookings',{ki
 
 /* enquiry */
 $('#enquiry').onsubmit=async e=>{ e.preventDefault(); await save('leads',{kind:$('#t').value,name:$('#n').value,contact:$('#c').value,message:$('#m').value||null}); wa(`Hello Agnovyra Ventures,\nName: ${$('#n').value}\nContact: ${$('#c').value}\nInterest: ${$('#t').value}\n\n${$('#m').value}`); };
+
+/* Agnovyra AI chat */
+const AI_FN=SB_URL+'/functions/v1/agnovyra-ai';
+let aiCid; try{ aiCid=localStorage.getItem('agn_cid')||crypto.randomUUID(); localStorage.setItem('agn_cid',aiCid);}catch(e){ aiCid=crypto.randomUUID(); }
+const aiHist=[]; const aiPanel=$('#aiPanel'), aiMsgs=$('#aiMsgs');
+const escH=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function aiFormat(t){
+  const lines=escH(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').split('\n'); let out='', list=null;
+  for(const l of lines){ const m=l.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)/);
+    if(m){ if(!list){ list=/^\s*\d/.test(l)?'ol':'ul'; out+='<'+list+'>'; } out+='<li>'+m[1]+'</li>'; }
+    else { if(list){ out+='</'+list+'>'; list=null; } if(l.trim()) out+='<p>'+l.replace(/^#+\s*/,'')+'</p>'; } }
+  if(list) out+='</'+list+'>'; return out;
+}
+function aiAdd(role,text){ const d=document.createElement('div'); d.className='ai-m '+(role==='user'?'u':'b'); d.innerHTML=role==='user'?escH(text):aiFormat(text); aiMsgs.appendChild(d); aiMsgs.scrollTop=aiMsgs.scrollHeight; return d; }
+const CHIPS=['How do I start broiler farming with ₦1m?','Catfish stocking for a 3×4 m pond','How does black soldier fly farming work?','How do I export cocoa from Nigeria?'];
+function aiOpen(){ aiPanel.classList.add('open'); if(!aiMsgs.children.length){ aiAdd('model','Hello 👋 I\'m **Agnovyra AI**. Ask me anything about poultry, fish, pigs, black soldier fly, cocoa, plantain or agro-export. You can write in English, Pidgin or Yoruba.'); $('#aiChips').innerHTML=''; CHIPS.forEach(c=>{ const b=document.createElement('button'); b.type='button'; b.textContent=c; b.onclick=()=>aiSend(c); $('#aiChips').appendChild(b); }); } setTimeout(()=>$('#aiIn').focus(),100); }
+$('#aiFab').onclick=()=>aiPanel.classList.contains('open')?aiPanel.classList.remove('open'):aiOpen();
+$('#openAi').onclick=aiOpen; $('#aiClose').onclick=()=>aiPanel.classList.remove('open');
+let aiBusy=false;
+async function aiSend(q){
+  q=(q||'').trim(); if(!q||aiBusy) return; aiBusy=true; $('#aiChips').innerHTML=''; $('#aiIn').value='';
+  aiAdd('user',q); aiHist.push({role:'user',text:q});
+  const t=document.createElement('div'); t.className='ai-m b ai-typing'; t.innerHTML='<span></span><span></span><span></span>'; aiMsgs.appendChild(t); aiMsgs.scrollTop=aiMsgs.scrollHeight;
+  try{
+    const r=await fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({action:'chat',client_id:aiCid,messages:aiHist.slice(-10)})});
+    const d=await r.json(); t.remove(); const ans=d.reply||d.error||'Sorry, please try again.'; aiAdd('model',ans); if(d.reply&&!d.limited) aiHist.push({role:'model',text:ans}); else aiHist.pop();
+  }catch(e){ t.remove(); aiAdd('model','Network problem. Please check your connection and try again.'); aiHist.pop(); }
+  aiBusy=false;
+}
+$('#aiForm').onsubmit=e=>{ e.preventDefault(); aiSend($('#aiIn').value); };
 </script>
 </body>
 </html>

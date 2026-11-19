@@ -26,7 +26,7 @@ label{font-size:.78rem;font-weight:700;color:var(--muted)}
 .tabs button{background:var(--paper);border:1px solid var(--sand);border-radius:999px;padding:9px 16px;font:600 .88rem Inter;cursor:pointer;white-space:nowrap}
 .tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
 .count{display:inline-block;background:var(--gold);color:var(--deep);border-radius:999px;font-size:.72rem;padding:1px 7px;margin-left:6px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
 .stat{background:var(--paper);border:1px solid var(--sand);border-radius:16px;padding:14px}
 .stat b{font-family:Fraunces,serif;font-size:1.6rem;color:var(--green);display:block}
 .stat span{font-size:.8rem;color:var(--muted)}
@@ -70,13 +70,15 @@ async function load(){
   if(!session) return loginView();
   const {data:adm} = await sb.from('admins').select('user_id').eq('user_id', session.user.id);
   if(!adm || !adm.length){ app.innerHTML = `<div class="login"><h2>Almost there</h2><p>You're signed in as <b>${esc(session.user.email)}</b>, but this account isn't an admin yet. Ask Claude to grant admin access, then reload.</p><button class="btn" onclick="sb.auth.signOut().then(()=>loginView())">Sign out</button></div>`; return; }
-  const [o,b,l,p] = await Promise.all([
+  const [o,b,l,p,pl,ch] = await Promise.all([
     sb.from('orders').select('*').order('created_at',{ascending:false}).limit(300),
     sb.from('bookings').select('*').order('created_at',{ascending:false}).limit(300),
     sb.from('leads').select('*').order('created_at',{ascending:false}).limit(300),
-    sb.from('products').select('*').order('sort')
+    sb.from('products').select('*').order('sort'),
+    sb.from('plan_requests').select('id,ref,created_at,name,phone,inputs,price_ngn,paid,status').order('created_at',{ascending:false}).limit(300),
+    sb.from('ai_chats').select('id',{count:'exact',head:true})
   ]);
-  data = {orders:o.data||[], bookings:b.data||[], leads:l.data||[], products:p.data||[]};
+  data = {orders:o.data||[], bookings:b.data||[], leads:l.data||[], products:p.data||[], plans:pl.data||[], chats:ch.count||0};
   render(session.user.email);
 }
 
@@ -88,15 +90,17 @@ function render(email){
       <div class="stat"><b>${n('orders')}</b><span>new orders</span></div>
       <div class="stat"><b>${n('bookings')}</b><span>new bookings</span></div>
       <div class="stat"><b>${n('leads')}</b><span>new enquiries</span></div>
-      <div class="stat"><b>${data.products.filter(p=>p.available).length}</b><span>products live</span></div>
+      <div class="stat"><b>${data.plans.filter(p=>p.status==='ready'&&!p.paid).length}</b><span>AI plans awaiting payment</span></div>
+      <div class="stat"><b>${data.chats}</b><span>AI questions answered</span></div>
     </div>
-    <div class="tabs">${['orders','bookings','leads','products'].map(k=>`<button data-t="${k}" class="${k===tab?'on':''}">${{orders:'Orders',bookings:'Bookings',leads:'Enquiries & waitlists',products:'Products & prices'}[k]}${k!=='products'&&n(k)?`<span class="count">${n(k)}</span>`:''}</button>`).join('')}</div>
+    <div class="tabs">${['orders','bookings','leads','plans','products'].map(k=>`<button data-t="${k}" class="${k===tab?'on':''}">${{orders:'Orders',bookings:'Bookings',leads:'Enquiries & waitlists',plans:'✦ AI plans',products:'Products & prices'}[k]}${!['products','plans'].includes(k)&&n(k)?`<span class="count">${n(k)}</span>`:''}</button>`).join('')}</div>
     <div id="list"></div>
   </div>`;
   rf.onclick = load; so.onclick = () => sb.auth.signOut().then(()=>loginView());
   document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t; render(email);});
   const list = document.getElementById('list');
   if(tab==='products') return productsView(list);
+  if(tab==='plans') return plansView(list, email);
   const rows = data[tab];
   if(!rows.length){ list.innerHTML = '<div class="empty">Nothing here yet.</div>'; return; }
   list.innerHTML = rows.map(r => {
@@ -118,6 +122,17 @@ function productsView(list){
     const v = tr.querySelector('input[type=number]').value;
     const {error} = await sb.from('products').update({price_ngn: v===''?null:+v, available: tr.querySelector('.av').checked, coming_soon: tr.querySelector('.cs').checked, updated_at: new Date().toISOString()}).eq('id', tr.dataset.id);
     e.target.textContent = error ? 'Error' : 'Saved ✓'; setTimeout(()=>e.target.textContent='Save',1500);
+  });
+}
+function plansView(list, email){
+  if(!data.plans.length){ list.innerHTML='<div class="empty">No AI business plans yet.</div>'; return; }
+  const base=location.href.replace(/admin(\.html)?.*$/,'');
+  list.innerHTML = data.plans.map(p=>`<div class="item"><div><h3>${esc(p.inputs?.enterprise||'Plan')} · ${esc(p.inputs?.location||'')}</h3><div class="meta">${when(p.created_at)} · Ref <b>${esc(p.ref.slice(0,8).toUpperCase())}</b> ${p.name?'· '+esc(p.name):''} ${p.phone?'· '+esc(p.phone):''} ${waLink(p.phone)}</div><p>Budget: ${esc(p.inputs?.budget||'-')} · Scale: ${esc(p.inputs?.scale||'-')} · For: ${esc(p.inputs?.purpose||'-')}</p><p><a class="wa" href="${base}plan.html?ref=${p.ref}" target="_blank" rel="noopener">Open plan page ↗</a></p></div><div class="side"><span class="pill ${p.paid?'':'new'}">${p.status==='ready'?(p.paid?'paid · unlocked':'awaiting payment'):esc(p.status)}</span><span class="meta">₦${Number(p.price_ngn).toLocaleString('en-NG')}</span>${p.status==='ready'?`<button class="btn sm ${p.paid?'':'gold'}" data-plan="${p.id}" data-paid="${p.paid}">${p.paid?'Lock again':'Mark paid & unlock'}</button>`:''}</div></div>`).join('');
+  list.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
+    const paid = b.dataset.paid!=='true';
+    const {error} = await sb.from('plan_requests').update({paid}).eq('id', b.dataset.plan);
+    if(error) return alertBox(error.message);
+    data.plans.find(x=>x.id==b.dataset.plan).paid = paid; render(email);
   });
 }
 function alertBox(m){ const d=document.createElement('div'); d.className='msg'; d.style.cssText='position:fixed;bottom:16px;left:16px;right:16px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.2)'; d.textContent=m; document.body.appendChild(d); setTimeout(()=>d.remove(),3000); }

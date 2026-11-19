@@ -61,9 +61,9 @@ Rules:
 - Use tables for costs, revenue, cash flow and the action plan.
 - End with one line: "Prepared with Agnovyra AI — Agnovyra Ventures, Abeokuta, Nigeria. Verify all prices locally before committing funds."`;
 
-async function callModel(model: string, system: string, contents: unknown[], maxTokens: number, temperature: number) {
+async function callModel(model: string, system: string, contents: unknown[], maxTokens: number, temperature: number, timeoutMs: number) {
   const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 140_000);
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: "POST",
@@ -77,11 +77,17 @@ async function callModel(model: string, system: string, contents: unknown[], max
 }
 
 // Try each model in order; skip models that are retired (404) or not on the free tier, so a Google model change can't take the AI offline.
-async function gemini(system: string, contents: { role: string; parts: { text: string }[] }[], maxTokens: number, temperature: number) {
+async function gemini(system: string, contents: { role: string; parts: { text: string }[] }[], maxTokens: number, temperature: number, timeoutMs = 25_000) {
   if (!GEMINI_KEY) throw new Error("NO_KEY");
   let last = "AI_ERROR";
   for (const model of MODELS) {
-    const { ok, status, data } = await callModel(model, system, contents, maxTokens, temperature);
+    const started = Date.now();
+    console.log("trying model", model);
+    let res;
+    try { res = await callModel(model, system, contents, maxTokens, temperature, timeoutMs); }
+    catch (e) { console.error("model call failed", model, Date.now() - started, "ms", String(e)); last = "BUSY"; continue; }
+    const { ok, status, data } = res;
+    console.log("model", model, "status", status, "in", Date.now() - started, "ms");
     if (ok) {
       const text = (data.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("").trim();
       if (text) return text;
@@ -141,7 +147,7 @@ Deno.serve(async (req) => {
       if (error) throw error;
       const prompt = `Client inputs:\n${Object.entries(inputs).filter(([, v]) => v).map(([k, v]) => `- ${k}: ${v}`).join("\n")}\n\nWrite the full business plan now.`;
       try {
-        const plan = await gemini(PLANNER, [{ role: "user", parts: [{ text: prompt }] }], 12000, 0.4);
+        const plan = await gemini(PLANNER, [{ role: "user", parts: [{ text: prompt }] }], 12000, 0.4, 130_000);
         const cut = plan.search(/\n## 2\./);
         const preview = cut > 0 ? plan.slice(0, cut).trim() : plan.slice(0, 1500);
         const outline = (plan.match(/^## .+$/gm) ?? []).join("\n");

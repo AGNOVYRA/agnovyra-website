@@ -839,7 +839,7 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SB_URL='https://qxweqdmmmotenmgywysi.supabase.co', SB_KEY='sb_publishable_QteEd5-DF-VVCkaYKJd5Vg_QSDi6_3X';
+const SB_URL='https://jivutijqmsyccdxvjkcc.supabase.co', SB_KEY='sb_publishable_Y9c0ItqdxjNAQ9Pr1_3zUA_4TVD3XYz';
 let sb=null; try{ sb=supabase.createClient(SB_URL,SB_KEY); }catch(e){}
 // Save a record, but never block the customer for more than 2.5s
 const save=(table,row)=>!sb?Promise.resolve():Promise.race([sb.from(table).insert(row).then(()=>{},()=>{}),new Promise(r=>setTimeout(r,2500))]);
